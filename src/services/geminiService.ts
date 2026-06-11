@@ -1,9 +1,19 @@
-import type { GenerationResponse } from '../types';
-import { isValidGenerationResponse } from '../utils/validators';
+import type { GenerationResponse, Situation, DesiredOutcome } from '../types';
 
 const WORKER_URL = import.meta.env.VITE_WORKER_URL as string;
 
-export async function generateReplies(prompt: string): Promise<GenerationResponse> {
+const DAILY_LIMIT_MESSAGE =
+  "You've used your 10 free replies for today. Your limit resets at midnight. Come back tomorrow.";
+
+export interface GenerateInput {
+  situation: Situation;
+  outcome: DesiredOutcome;
+  role: string;
+  incomingMessage: string;
+  writingExamples: string[];
+}
+
+export async function generateReplies(input: GenerateInput): Promise<GenerationResponse> {
   if (!WORKER_URL) {
     throw new Error('Generation service is not configured. Please set VITE_WORKER_URL.');
   }
@@ -13,34 +23,48 @@ export async function generateReplies(prompt: string): Promise<GenerationRespons
     response = await fetch(WORKER_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ prompt }),
+      body: JSON.stringify({
+        situation: input.situation,
+        outcome: input.outcome,
+        role: input.role,
+        incomingMessage: input.incomingMessage,
+        writingExamples: input.writingExamples,
+      }),
     });
   } catch {
-    throw new Error('NetworkError: Unable to reach the generation service. Check your connection.');
-  }
-
-  if (!response.ok) {
-    let errorMessage = `HTTP ${response.status}`;
-    try {
-      const errorBody = await response.json();
-      const msg = errorBody?.error?.message ?? errorBody?.error;
-      if (msg) errorMessage = String(msg);
-    } catch {
-      // ignore parse errors on error body
-    }
-    throw new Error(errorMessage);
+    throw new Error('Something went wrong. Please try again.');
   }
 
   let parsed: unknown;
   try {
     parsed = await response.json();
   } catch {
-    throw new Error('Failed to parse the worker response as JSON.');
+    throw new Error('Something went wrong. Please try again.');
   }
 
-  if (!isValidGenerationResponse(parsed)) {
-    throw new Error('Response structure was unexpected. Please try again or simplify your input.');
+  if (response.status === 429) {
+    const body = parsed as Record<string, unknown>;
+    if (body?.error === 'daily_limit_reached') {
+      throw new Error(DAILY_LIMIT_MESSAGE);
+    }
+    throw new Error('Something went wrong. Please try again.');
   }
 
-  return parsed;
+  if (!response.ok) {
+    throw new Error('Something went wrong. Please try again.');
+  }
+
+  const body = parsed as { replies?: Array<{ label?: string; content?: string }> };
+
+  if (!Array.isArray(body?.replies) || body.replies.length === 0) {
+    throw new Error('Something went wrong. Please try again.');
+  }
+
+  return {
+    replies: body.replies.map((r) => ({
+      title: r.label ?? '',
+      content: r.content ?? '',
+    })),
+    risk_analysis: [],
+  };
 }

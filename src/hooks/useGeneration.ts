@@ -1,7 +1,6 @@
 import { useState, useCallback } from 'react';
 import type { Reply, QuickAction, Situation, DesiredOutcome } from '../types';
 import { generateReplies } from '../services/geminiService';
-import { buildGenerationPrompt, buildQuickActionPrompt } from '../utils/promptBuilder';
 import { parseApiError } from '../utils/validators';
 
 interface GenerationInput {
@@ -23,15 +22,13 @@ export function useGeneration() {
     setError(null);
 
     try {
-      const prompt = buildGenerationPrompt({
-        incomingMessage: input.incomingMessage,
+      const response = await generateReplies({
         situation: input.situation,
-        desiredOutcome: input.desiredOutcome,
-        role: input.role || undefined,
-        writingExamples: input.writingExamples.length > 0 ? input.writingExamples : undefined,
+        outcome: input.desiredOutcome,
+        role: input.role || '',
+        incomingMessage: input.incomingMessage,
+        writingExamples: input.writingExamples,
       });
-
-      const response = await generateReplies(prompt);
 
       const mapped: Reply[] = response.replies.map((r, i) => ({
         id: `reply-${Date.now()}-${i}`,
@@ -66,14 +63,21 @@ export function useGeneration() {
       setError(null);
 
       try {
-        const prompt = buildQuickActionPrompt({
-          originalReply: target.content,
-          action,
-          situation,
-          desiredOutcome,
-        });
+        const actionDescriptions: Record<QuickAction, string> = {
+          firmer: 'more assertive and firm',
+          'more-polite': 'warmer and more polite',
+          shorter: 'significantly shorter',
+          'more-human': 'more conversational and human-sounding',
+          'more-confident': 'more confident and authoritative',
+        };
 
-        const response = await generateReplies(prompt);
+        const response = await generateReplies({
+          situation,
+          outcome: desiredOutcome,
+          role: '',
+          incomingMessage: `Please rewrite this message to make it ${actionDescriptions[action]}:\n\n"${target.content}"`,
+          writingExamples: [],
+        });
         const refined = response.replies[0];
 
         if (refined) {
