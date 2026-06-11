@@ -1,0 +1,121 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── CSS Custom Properties ────────────────────────────────────────────────── */
+
+:root {
+  --color-bg:           #F9FAFB;
+  --color-surface:      #FFFFFF;
+  --color-surface-2:    #F3F4F6;
+  --color-border:       #E5E7EB;
+  --color-text-primary: #111827;
+  --color-text-muted:   #6B7280;
+  --color-primary:      #6366F1;
+  --color-primary-hover:#4F46E5;
+}
+
+:root.dark {
+  --color-bg:           #0F1117;
+  --color-surface:      #1A1D27;
+  --color-surface-2:    #222535;
+  --color-border:       #2D3148;
+  --color-text-primary: #F1F5F9;
+  --color-text-muted:   #8892A4;
+  --color-primary:      #818CF8;
+  --color-primary-hover:#6366F1;
+}
+
+/* ─── Base Reset ────────────────────────────────────────────────────────────── */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+  line-height: 1.6;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* ─── Scrollbar Styling ─────────────────────────────────────────────────────── */
+
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-muted);
+}
+
+/* ─── Select Styling ────────────────────────────────────────────────────────── */
+
+select option {
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+}
+
+/* ─── Animations ────────────────────────────────────────────────────────────── */
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(20px); }
+  to   { opacity: 1; transform: translateX(0);    }
+}
+
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.5; }
+}
+
+.animate-fade-in       { animation: fadeIn 0.25s ease forwards; }
+.animate-slide-up      { animation: slideUp 0.3s ease forwards; }
+.animate-slide-in-right{ animation: slideInRight 0.3s ease forwards; }
+
+/* ─── Focus Styles ──────────────────────────────────────────────────────────── */
+
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* ─── Tailwind Component Layer ──────────────────────────────────────────────── */
+
+@layer components {
+  .card {
+    @apply bg-surface border border-border rounded-2xl shadow-sm;
+  }
+
+  .input-base {
+    @apply bg-surface-2 border border-border rounded-xl px-4 py-2.5 text-sm text-text-primary
+           placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-indigo-500/40
+           focus:border-indigo-500/50 transition-all;
+  }
+}
