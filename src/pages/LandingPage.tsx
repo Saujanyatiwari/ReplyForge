@@ -477,7 +477,7 @@ export default function LandingPage() {
           }}
         >
           <p style={{ color: '#555', fontSize: '12px', margin: 0, textAlign: 'center', whiteSpace: 'nowrap' }}>
-            Tell Stance the situation. Get 3 confident replies in seconds — free, private, no signup.
+            Tell Stance the situation. Get 3 confident replies in seconds.
           </p>
           <p style={{ color: '#666', fontSize: '13px', margin: 0, textAlign: 'center', fontWeight: 600 }}>
             Free · Private · No account needed
