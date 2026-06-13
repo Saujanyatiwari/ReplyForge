@@ -167,18 +167,18 @@ export default function LandingPage() {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          paddingTop: '68px',
+          paddingTop: '48px',
           width: '100%',
         }}
       >
         {/* Headline */}
-        <div style={{ textAlign: 'center', marginBottom: '18px', padding: '0 24px' }}>
+        <div style={{ textAlign: 'center', marginBottom: '10px', padding: '0 24px' }}>
           <h1
             style={{
               color: '#fff',
               fontSize: '30px',
               fontWeight: 700,
-              margin: '0 0 8px 0',
+              margin: '0 0 4px 0',
               lineHeight: 1.15,
               letterSpacing: '-0.5px',
             }}
