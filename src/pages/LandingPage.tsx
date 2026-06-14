@@ -181,12 +181,12 @@ export default function LandingPage() {
             width: '100%',
             height: '100dvh',
             overflow: 'hidden',
-            paddingTop: '56px',
+            paddingTop: '72px',
             boxSizing: 'border-box',
           }}
         >
           {/* Mobile headline */}
-          <div style={{ textAlign: 'center', padding: '12px 24px 8px', flexShrink: 0 }}>
+          <div style={{ textAlign: 'center', padding: '12px 24px 20px', flexShrink: 0 }}>
             <h1
               style={{
                 color: '#fff',
@@ -419,15 +419,18 @@ export default function LandingPage() {
           {/* Mobile bottom text */}
           <div
             style={{
+              position: 'fixed',
+              bottom: 0,
+              left: 0,
+              right: 0,
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
-              paddingTop: '8px',
               paddingLeft: '24px',
               paddingRight: '24px',
-              paddingBottom: 'calc(14px + env(safe-area-inset-bottom, 0px))',
+              paddingBottom: 'calc(28px + env(safe-area-inset-bottom, 0px))',
               gap: '3px',
-              flexShrink: 0,
+              zIndex: 10,
             }}
           >
             <p style={{ color: '#555', fontSize: '12px', margin: 0, textAlign: 'center' }}>
