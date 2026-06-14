@@ -182,7 +182,7 @@ export default function LandingPage() {
               letterSpacing: '-0.5px',
             }}
           >
-            Every difficult email,{' '}
+            Every difficult conversation,{' '}
             {headlineText}
             <span
               style={{
@@ -341,7 +341,7 @@ export default function LandingPage() {
                       marginBottom: '14px',
                     }}
                   >
-                    Incoming Email
+                    Incoming Message
                   </div>
                   <p
                     style={{
